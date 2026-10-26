@@ -1,0 +1,37 @@
+<div class="shell">
+  <aside class="sidebar">
+    <a routerLink="/biblioteca" class="logo">
+      <span class="logo-disc" aria-hidden="true"></span>
+      <span class="logo-name">Sonora</span>
+    </a>
+
+    <nav class="nav">
+      <a routerLink="/biblioteca" routerLinkActive="active">
+        <app-icon name="music" [size]="17" />Biblioteca
+      </a>
+      <a routerLink="/playlists" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <app-icon name="disc" [size]="17" />Playlists
+      </a>
+      <a routerLink="/favoritas" routerLinkActive="active">
+        <app-icon name="heart" [size]="17" />Favoritas
+      </a>
+    </nav>
+
+    <div class="side-playlists">
+      <span class="side-label">Suas playlists</span>
+      @for (playlist of playlists(); track playlist.id) {
+        <a class="side-item" [routerLink]="['/playlists', playlist.id]" routerLinkActive="active">
+          {{ playlist.name }}
+        </a>
+      } @empty {
+        <span class="side-empty">Nenhuma playlist ainda</span>
+      }
+    </div>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+
+  <app-player-bar />
+</div>
