@@ -1,0 +1,88 @@
+<footer class="player">
+  @if (vm.track(); as track) {
+    <div class="now">
+      <div class="vinyl" [class.spinning]="vm.isPlaying()" aria-hidden="true">
+        <app-cover [hue]="track.hue" [label]="track.title" [size]="26" [round]="true" />
+      </div>
+      <div class="now-meta">
+        <span class="now-title">{{ track.title }}</span>
+        <span class="now-artist">{{ track.artist }}</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="buttons">
+        <button
+          class="icon-btn"
+          type="button"
+          [class.active]="vm.shuffle()"
+          (click)="vm.toggleShuffle()"
+          aria-label="Modo aleatório"
+        >
+          <app-icon name="shuffle" [size]="15" />
+        </button>
+        <button class="icon-btn" type="button" (click)="vm.previous()" aria-label="Anterior">
+          <app-icon name="prev" [size]="17" />
+        </button>
+        <button
+          class="play-btn"
+          type="button"
+          (click)="vm.toggle()"
+          [attr.aria-label]="vm.isPlaying() ? 'Pausar' : 'Tocar'"
+        >
+          <app-icon [name]="vm.isPlaying() ? 'pause' : 'play'" [size]="17" />
+        </button>
+        <button class="icon-btn" type="button" (click)="vm.next()" aria-label="Próxima">
+          <app-icon name="next" [size]="17" />
+        </button>
+        <button
+          class="icon-btn repeat"
+          type="button"
+          [class.active]="vm.repeat() !== 'off'"
+          (click)="vm.cycleRepeat()"
+          aria-label="Modo de repetição"
+        >
+          <app-icon name="repeat" [size]="15" />
+          @if (vm.repeat() === 'one') {
+            <span class="repeat-one">1</span>
+          }
+        </button>
+      </div>
+
+      <div class="progress">
+        <span class="time">{{ vm.progress() | duration }}</span>
+        <input
+          class="range"
+          type="range"
+          min="0"
+          max="100"
+          step="0.1"
+          [value]="vm.percent()"
+          [style.--fill]="vm.percent() + '%'"
+          (input)="onSeek($event)"
+          aria-label="Posição da música"
+        />
+        <span class="time">{{ vm.duration() | duration }}</span>
+      </div>
+    </div>
+
+    <div class="side">
+      <app-icon name="volume" [size]="16" />
+      <input
+        class="range volume"
+        type="range"
+        min="0"
+        max="100"
+        [value]="vm.volume() * 100"
+        [style.--fill]="vm.volume() * 100 + '%'"
+        (input)="onVolume($event)"
+        aria-label="Volume"
+      />
+    </div>
+  } @else {
+    <div class="idle">
+      <app-icon name="music" [size]="16" />
+      Escolha uma música para começar
+    </div>
+  }
+</footer>
