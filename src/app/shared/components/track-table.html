@@ -1,0 +1,117 @@
+<div class="table">
+  <div class="thead">
+    <span class="col-n">#</span>
+    <span>Título</span>
+    <span class="col-album">Álbum</span>
+    <span class="col-dur">Duração</span>
+    <span class="col-actions"></span>
+  </div>
+
+  @for (track of tracks(); track track.id; let i = $index; let first = $first; let last = $last) {
+    <div class="row" [class.current]="track.id === currentId()" appGlow (dblclick)="play(i)">
+      <button
+        class="col-n play-cell"
+        type="button"
+        (click)="play(i)"
+        [attr.aria-label]="'Tocar ' + track.title"
+      >
+        @if (track.id === currentId() && playing()) {
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        } @else {
+          <span class="n">{{ i + 1 }}</span>
+          <app-icon name="play" [size]="14" class="hover-play" />
+        }
+      </button>
+
+      <div class="title-cell">
+        <app-cover [hue]="track.hue" [label]="track.title" [size]="40" />
+        <div class="meta">
+          <span class="t">{{ track.title }}</span>
+          <span class="a">{{ track.artist }}</span>
+        </div>
+      </div>
+
+      <span class="col-album">{{ track.album }}</span>
+      <span class="col-dur">{{ track.duration | duration }}</span>
+
+      <div class="col-actions">
+        @if (reorderable()) {
+          <button
+            class="icon-btn subtle"
+            type="button"
+            [disabled]="first"
+            (click)="reorder.emit({ index: i, delta: -1 })"
+            aria-label="Mover para cima"
+          >
+            <app-icon name="up" [size]="14" />
+          </button>
+          <button
+            class="icon-btn subtle"
+            type="button"
+            [disabled]="last"
+            (click)="reorder.emit({ index: i, delta: 1 })"
+            aria-label="Mover para baixo"
+          >
+            <app-icon name="down" [size]="14" />
+          </button>
+        }
+
+        <button
+          class="icon-btn fav"
+          type="button"
+          [class.active]="track.favorite"
+          (click)="toggleFavorite(track)"
+          [attr.aria-label]="track.favorite ? 'Remover das favoritas' : 'Marcar como favorita'"
+        >
+          <app-icon name="heart" [size]="16" />
+        </button>
+
+        <div class="menu-wrap">
+          <button
+            class="icon-btn"
+            type="button"
+            (click)="toggleMenu(track.id, $event)"
+            aria-label="Mais opções"
+          >
+            <app-icon name="more" [size]="16" />
+          </button>
+
+          @if (menuFor() === track.id) {
+            <div class="menu" (click)="$event.stopPropagation()">
+              <span class="menu-label">Adicionar à playlist</span>
+              @for (playlist of playlists(); track playlist.id) {
+                <button type="button" (click)="addTo(playlist.id, track)">
+                  <app-icon name="plus" [size]="13" />{{ playlist.name }}
+                </button>
+              } @empty {
+                <span class="menu-empty">Crie uma playlist primeiro</span>
+              }
+
+              @if (editable()) {
+                <hr />
+                <button type="button" (click)="edit.emit(track); closeMenu()">
+                  <app-icon name="edit" [size]="13" />Editar
+                </button>
+                <button type="button" class="danger" (click)="deleteTrack.emit(track); closeMenu()">
+                  <app-icon name="trash" [size]="13" />Excluir da biblioteca
+                </button>
+              }
+
+              @if (removable()) {
+                <hr />
+                <button type="button" class="danger" (click)="removeFromList.emit(track); closeMenu()">
+                  <app-icon name="close" [size]="13" />Remover da playlist
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <div class="empty">
+      <app-icon name="disc" [size]="28" />
+      <ng-content />
+    </div>
+  }
+</div>
