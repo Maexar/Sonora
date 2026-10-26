@@ -1,0 +1,18 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <span class="eyebrow">Marcadas com o coração</span>
+      <h1>Favoritas</h1>
+      <p class="sub">{{ favorites().length }} músicas · {{ duration() | duration }}</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn" type="button" (click)="playAll()" [disabled]="favorites().length === 0">
+        <app-icon name="play" [size]="15" />Tocar tudo
+      </button>
+    </div>
+  </header>
+
+  <app-track-table [tracks]="favorites()">
+    <p>Nenhuma favorita ainda. Toque no coração de qualquer música para guardá-la aqui.</p>
+  </app-track-table>
+</section>
