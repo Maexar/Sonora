@@ -1,0 +1,86 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <span class="eyebrow">Sua coleção</span>
+      <h1>Biblioteca</h1>
+      <p class="sub">{{ vm.tracks().length }} músicas · {{ vm.totalDuration() | duration }} no total</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn btn-ghost" type="button" (click)="vm.playAll()">
+        <app-icon name="play" [size]="15" />Tocar tudo
+      </button>
+      <button class="btn" type="button" (click)="openCreate()">
+        <app-icon name="plus" [size]="15" />Nova música
+      </button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <label class="search">
+      <app-icon name="search" [size]="16" />
+      <input
+        type="text"
+        placeholder="Buscar por título, artista ou álbum"
+        [value]="vm.search()"
+        (input)="onSearch($event)"
+      />
+    </label>
+    <select class="field select" [value]="vm.sort()" (change)="onSort($event)" aria-label="Ordenar por">
+      <option value="recent">Mais recentes</option>
+      <option value="title">Título</option>
+      <option value="artist">Artista</option>
+    </select>
+  </div>
+
+  <app-track-table
+    [tracks]="vm.tracks()"
+    [editable]="true"
+    (edit)="openEdit($event)"
+    (deleteTrack)="vm.remove($event)"
+  >
+    <p>Nada por aqui. Adicione sua primeira música.</p>
+  </app-track-table>
+</section>
+
+<app-modal
+  [open]="vm.formOpen()"
+  [title]="vm.editing() ? 'Editar música' : 'Nova música'"
+  (close)="vm.closeForm()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field-label">
+      Título
+      <input class="field" formControlName="title" appAutofocus />
+    </label>
+    <label class="field-label">
+      Artista
+      <input class="field" formControlName="artist" />
+    </label>
+    <label class="field-label">
+      Álbum
+      <input class="field" formControlName="album" placeholder="Em branco vira Single" />
+    </label>
+    <div class="grid-2">
+      <label class="field-label">
+        Minutos
+        <input class="field" type="number" min="0" max="99" formControlName="minutes" />
+      </label>
+      <label class="field-label">
+        Segundos
+        <input class="field" type="number" min="0" max="59" formControlName="seconds" />
+      </label>
+    </div>
+    <label class="field-label">
+      URL de áudio (opcional) — arquivo direto ou link do YouTube
+      <input
+        class="field"
+        formControlName="audioUrl"
+        placeholder="https://exemplo.com/faixa.mp3 ou https://youtube.com/watch?v=…"
+      />
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-ghost" type="button" (click)="vm.closeForm()">Cancelar</button>
+      <button class="btn" type="submit" [disabled]="form.invalid">Salvar</button>
+    </div>
+  </form>
+</app-modal>
