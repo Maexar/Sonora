@@ -1,0 +1,92 @@
+@if (vm.playlist(); as playlist) {
+  <section class="page">
+    <header class="hero">
+      <div class="hero-cover" [class.blank]="vm.hues().length === 0">
+        @for (hue of vm.hues(); track $index) {
+          <span [style.background]="gradient(hue)"></span>
+        } @empty {
+          <app-icon name="disc" [size]="42" />
+        }
+      </div>
+      <div class="hero-meta">
+        <span class="eyebrow">Playlist</span>
+        <h1>{{ playlist.name }}</h1>
+        @if (playlist.description) {
+          <p class="desc">{{ playlist.description }}</p>
+        }
+        <p class="sub">{{ vm.tracks().length }} músicas · {{ vm.duration() | duration }}</p>
+        <div class="hero-actions">
+          <button class="btn" type="button" (click)="vm.playAll()" [disabled]="vm.tracks().length === 0">
+            <app-icon name="play" [size]="15" />Tocar
+          </button>
+          <button class="btn btn-ghost" type="button" (click)="vm.addOpen.set(true)">
+            <app-icon name="plus" [size]="15" />Adicionar músicas
+          </button>
+          <button class="btn btn-ghost" type="button" (click)="openEdit()">
+            <app-icon name="edit" [size]="15" />Editar
+          </button>
+          <button class="btn btn-danger" type="button" (click)="vm.destroy()">
+            <app-icon name="trash" [size]="15" />Excluir
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <app-track-table
+      [tracks]="vm.tracks()"
+      [removable]="true"
+      [reorderable]="true"
+      (removeFromList)="vm.removeTrack($event)"
+      (reorder)="vm.reorder($event.index, $event.delta)"
+    >
+      <p>Esta playlist ainda está vazia. Adicione músicas da biblioteca.</p>
+    </app-track-table>
+  </section>
+
+  <app-modal [open]="vm.editOpen()" title="Editar playlist" (close)="vm.editOpen.set(false)">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label class="field-label">
+        Nome
+        <input class="field" formControlName="name" appAutofocus />
+      </label>
+      <label class="field-label">
+        Descrição
+        <input class="field" formControlName="description" placeholder="Opcional" />
+      </label>
+      <div class="form-actions">
+        <button class="btn btn-ghost" type="button" (click)="vm.editOpen.set(false)">Cancelar</button>
+        <button class="btn" type="submit" [disabled]="form.invalid">Salvar</button>
+      </div>
+    </form>
+  </app-modal>
+
+  <app-modal [open]="vm.addOpen()" title="Adicionar músicas" (close)="vm.addOpen.set(false)">
+    <div class="picker">
+      @for (track of vm.available(); track track.id) {
+        <div class="picker-row">
+          <app-cover [hue]="track.hue" [label]="track.title" [size]="38" />
+          <div class="picker-meta">
+            <span class="t">{{ track.title }}</span>
+            <span class="a">{{ track.artist }}</span>
+          </div>
+          <button
+            class="icon-btn"
+            type="button"
+            (click)="vm.add(track)"
+            [attr.aria-label]="'Adicionar ' + track.title"
+          >
+            <app-icon name="plus" [size]="16" />
+          </button>
+        </div>
+      } @empty {
+        <p class="picker-empty">Toda a biblioteca já está nesta playlist.</p>
+      }
+    </div>
+  </app-modal>
+} @else {
+  <section class="page not-found">
+    <app-icon name="disc" [size]="34" />
+    <h1>Playlist não encontrada</h1>
+    <a class="btn btn-ghost" routerLink="/playlists">Voltar para playlists</a>
+  </section>
+}

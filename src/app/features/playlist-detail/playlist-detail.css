@@ -1,0 +1,120 @@
+.hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  margin-bottom: 30px;
+}
+
+.hero-cover {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  width: 190px;
+  height: 190px;
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--panel-2);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+}
+
+.hero-cover.blank {
+  display: grid;
+  place-items: center;
+  grid-template-columns: 1fr;
+  color: var(--muted);
+}
+
+.hero-cover span:only-child { grid-column: 1 / -1; grid-row: 1 / -1; }
+
+.hero-meta h1 {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.3px;
+}
+
+.desc {
+  margin-top: 8px;
+  font-size: 14.5px;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.sub {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px;
+  border-radius: 10px;
+}
+
+.picker-row:hover { background: var(--panel-2); }
+
+.picker-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.picker-meta .t {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker-meta .a {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.picker-empty {
+  padding: 20px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 80px;
+  color: var(--muted);
+}
+
+.not-found h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .hero { flex-direction: column; align-items: flex-start; }
+  .hero-cover { width: 150px; height: 150px; }
+  .hero-meta h1 { font-size: 32px; }
+}

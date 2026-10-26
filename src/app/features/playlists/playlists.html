@@ -1,0 +1,58 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <span class="eyebrow">Coleções autorais</span>
+      <h1>Playlists</h1>
+      <p class="sub">Agrupe músicas do seu jeito e toque tudo em sequência.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn" type="button" (click)="openCreate()">
+        <app-icon name="plus" [size]="15" />Nova playlist
+      </button>
+    </div>
+  </header>
+
+  <div class="grid">
+    @for (card of vm.cards(); track card.playlist.id) {
+      <a class="card" appGlow [routerLink]="['/playlists', card.playlist.id]">
+        <div class="card-cover" [class.blank]="card.hues.length === 0">
+          @for (hue of card.hues; track $index) {
+            <span [style.background]="gradient(hue)"></span>
+          } @empty {
+            <app-icon name="disc" [size]="30" />
+          }
+        </div>
+        <span class="card-name">{{ card.playlist.name }}</span>
+        <span class="card-meta">
+          @if (card.count > 0) {
+            {{ card.count }} músicas · {{ card.duration | duration }}
+          } @else {
+            Playlist vazia
+          }
+        </span>
+      </a>
+    } @empty {
+      <div class="empty">
+        <app-icon name="disc" [size]="30" />
+        <p>Nenhuma playlist por enquanto. Crie a primeira.</p>
+      </div>
+    }
+  </div>
+</section>
+
+<app-modal [open]="vm.createOpen()" title="Nova playlist" (close)="vm.createOpen.set(false)">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field-label">
+      Nome
+      <input class="field" formControlName="name" appAutofocus />
+    </label>
+    <label class="field-label">
+      Descrição
+      <input class="field" formControlName="description" placeholder="Opcional" />
+    </label>
+    <div class="form-actions">
+      <button class="btn btn-ghost" type="button" (click)="vm.createOpen.set(false)">Cancelar</button>
+      <button class="btn" type="submit" [disabled]="form.invalid">Criar</button>
+    </div>
+  </form>
+</app-modal>
